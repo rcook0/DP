@@ -1,0 +1,15 @@
+# Always include metadata
+include README.md
+include LICENSE
+include pyproject.toml
+include setup.cfg
+
+# Include all notebooks
+recursive-include dp_compendium/notebooks *.ipynb
+
+# Include tests
+recursive-include tests *.py
+
+# Exclude temporary files
+exclude *.pyc
+exclude __pycache__/*
