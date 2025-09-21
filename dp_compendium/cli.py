@@ -1,52 +1,247 @@
-import argparse, ast, json
-from lcs_traceback import lcs_with_trace
-from floyd_warshall_paths import floyd_warshall_with_path, reconstruct_path
-from matrix_chain_reconstruct import matrix_chain_parenthesize
-from tsp_bitmask_path import tsp_with_path
-from sequence_alignment_traceback import needleman_wunsch_align
+import click
 
-def cmd_lcs(args):
-    n, s = lcs_with_trace(args.a, args.b)
-    print(json.dumps({"length": n, "subsequence": s}, ensure_ascii=False))
+# -----------------
+# Classics
+# -----------------
+from dp_compendium import (
+    coin_change_min_coins,
+    coin_change_num_ways,
+    knapsack_01,
+    knapsack_unbounded,
+    subset_sum,
+    partition_equal_subset,
+    lis,
+    lcs_traceback,
+    edit_distance,
+    rod_cutting,
+    house_robber,
+    longest_palindromic_subsequence,
+    palindrome_partitioning_min_cuts,
+    floyd_warshall_paths,
+    tsp_bitmask_path,
+    matrix_chain_reconstruct,
+    optimal_bst,
+    polygon_triangulation,
+    tree_max_independent_set,
+    egg_dropping,
+    painters_partition,
+    digit_dp_no_consecutive_equal,
+    sequence_alignment_traceback,
+    dtw,
+)
 
-def cmd_floyd(args):
-    mat = ast.literal_eval(args.matrix)
-    D, nxt = floyd_warshall_with_path(mat)
-    print(json.dumps({"dist": D}, ensure_ascii=False))
-    if args.path:
-        u,v = map(int, args.path.split(','))
-        path = reconstruct_path(nxt, u, v)
-        print(json.dumps({"path": path}, ensure_ascii=False))
+# -----------------
+# Exotics
+# -----------------
+from dp_compendium import (
+    steiner_tree_bitmask as steiner,
+    hamiltonian_count as hc,
+    min_path_cover_dag as mpc,
+    game_pick_ends as gpe,
+    grundy_subtraction as gs,
+    probability_dp as pd,
+    mdp_value_iteration as mdp,
+)
 
-def cmd_matrix_chain(args):
-    p = ast.literal_eval(args.p)
-    cost, parens = matrix_chain_parenthesize(p)
-    print(json.dumps({"cost": cost, "parenthesization": parens}, ensure_ascii=False))
+# -----------------
+# Sequence / Array
+# -----------------
+from dp_compendium import (
+    max_sum_incr_subseq as msis,
+    longest_bitonic_subseq as lbs,
+    max_submatrix_sum as mss,
+    partition_array_max_sum as pams,
+)
 
-def cmd_tsp(args):
-    mat = ast.literal_eval(args.matrix)
-    cost, tour = tsp_with_path(mat)
-    print(json.dumps({"cost": cost, "tour": tour}, ensure_ascii=False))
+# -----------------
+# Stringology
+# -----------------
+from dp_compendium import (
+    wildcard_match as wm,
+    regex_match as rm,
+    shortest_common_superseq as scs,
+    distinct_subseq_count as dsc,
+    min_window_subseq as mws,
+)
 
-def cmd_align(args):
-    score, a_aln, b_aln = needleman_wunsch_align(args.a, args.b, match=args.match, mismatch=args.mismatch, gap=args.gap)
-    print(json.dumps({"score": score, "a": a_aln, "b": b_aln}, ensure_ascii=False))
 
-def main():
-    p = argparse.ArgumentParser()
-    sub = p.add_subparsers(dest="cmd", required=True)
+@click.group()
+def cli():
+    """Dynamic Programming Compendium CLI"""
+    pass
 
-    sp = sub.add_parser("lcs"); sp.add_argument("--a", required=True); sp.add_argument("--b", required=True); sp.set_defaults(func=cmd_lcs)
-    sp = sub.add_parser("floyd"); sp.add_argument("--matrix", required=True); sp.add_argument("--path", help="u,v"); sp.set_defaults(func=cmd_floyd)
-    sp = sub.add_parser("matrix-chain"); sp.add_argument("--p", required=True); sp.set_defaults(func=cmd_matrix_chain)
-    sp = sub.add_parser("tsp"); sp.add_argument("--matrix", required=True); sp.set_defaults(func=cmd_tsp)
-    sp = sub.add_parser("align"); 
-    sp.add_argument("--a", required=True); sp.add_argument("--b", required=True)
-    sp.add_argument("--match", type=int, default=1); sp.add_argument("--mismatch", type=int, default=-1); sp.add_argument("--gap", type=int, default=-2)
-    sp.set_defaults(func=cmd_align)
 
-    args = p.parse_args()
-    args.func(args)
+# -----------------
+# Classics group
+# -----------------
+@cli.group()
+def classics():
+    """Classic DP problems"""
+    pass
 
-if __name__ == "__main__":
-    main()
+
+@classics.command()
+def coin_demo():
+    print("Coin Change (min coins):", coin_change_min_coins.min_coins([1, 2, 5], 11))
+
+
+@classics.command()
+def knapsack_demo():
+    print("Knapsack 0/1:", knapsack_01.knapsack([1, 2, 3], [6, 10, 12], 5))
+
+
+@classics.command()
+def lis_demo():
+    print("LIS length:", lis.lis([10, 22, 9, 33, 21, 50, 41, 60]))
+
+
+@classics.command()
+def lcs_demo():
+    print("LCS:", lcs_traceback.lcs("ABCBDAB", "BDCAB"))
+
+
+@classics.command()
+def edit_demo():
+    print("Edit Distance:", edit_distance.edit_distance("kitten", "sitting"))
+
+
+@classics.command()
+def matrix_demo():
+    arr = [40, 20, 30, 10, 30]
+    print("Matrix Chain Multiplication:", matrix_chain_reconstruct.matrix_chain_order(arr))
+
+
+# -----------------
+# Exotics group
+# -----------------
+@cli.group()
+def exotics():
+    """Exotic / advanced DP problems"""
+    pass
+
+
+@exotics.command()
+def steiner_demo():
+    n = 4
+    edges = [(0, 1, 1), (1, 2, 1), (2, 3, 1), (3, 0, 1), (0, 2, 2), (1, 3, 2)]
+    print("Steiner cost:", steiner.steiner_tree_cost(n, edges, [0, 2]))
+
+
+@exotics.command()
+def hamiltonian_demo():
+    adj = [[0, 1, 1], [1, 0, 1], [1, 1, 0]]
+    print("Hamiltonian cycles:", hc.count_hamiltonian_cycles(adj))
+
+
+@exotics.command()
+def pathcover_demo():
+    n = 4
+    edges = [(0, 1), (1, 2), (2, 3)]
+    print("Min path cover:", mpc.min_path_cover_by_matching(n, edges))
+
+
+@exotics.command()
+def game_demo():
+    arr = [1, 5, 233, 7]
+    print("Optimal first-player score:", gpe.optimal_first_player_score(arr))
+
+
+@exotics.command()
+def grundy_demo():
+    moves = [1, 3, 4]
+    heaps = [5, 7]
+    print("Position winning?", gs.winning_position(heaps, moves))
+
+
+@exotics.command()
+def prob_demo():
+    print("P(H=3 before T=3):", pd.prob_heads_before_tails(3, 3))
+    print("Ways (2 dice->7):", pd.dice_ways(2, 7))
+
+
+@exotics.command()
+def mdp_demo():
+    S = ["A", "B", "C"]
+    A = {"A": ["stay", "go"], "B": ["stay", "go"], "C": ["stay"]}
+
+    def P(s, a):
+        if s == "A" and a == "go":
+            return [(0.7, "B"), (0.3, "C")]
+        if s == "B" and a == "go":
+            return [(0.6, "C"), (0.4, "A")]
+        return [(1.0, s)]
+
+    def R(s, a, sp):
+        return 1.0 if sp == "C" else 0.0
+
+    V, pi = mdp.value_iteration(S, A, P, R, 0.9)
+    print("Values:", V)
+    print("Policy:", pi)
+
+
+# -----------------
+# Sequence / Array group
+# -----------------
+@cli.group()
+def sequence():
+    """Sequence / Array DP problems"""
+    pass
+
+
+@sequence.command()
+def msis_demo():
+    arr = [1, 101, 2, 3, 100, 4, 5]
+    print("MSIS:", msis.max_sum_incr_subseq(arr))
+
+
+@sequence.command()
+def bitonic_demo():
+    arr = [1, 11, 2, 10, 4, 5, 2, 1]
+    print("Longest Bitonic Subsequence:", lbs.longest_bitonic_subseq(arr))
+
+
+@sequence.command()
+def submatrix_demo():
+    mat = [[1, -2, -1, 4], [-8, 3, 4, 2], [3, 8, 10, -8], [-4, -1, 1, 7]]
+    print("Max Submatrix Sum:", mss.max_submatrix_sum(mat))
+
+
+@sequence.command()
+def partition_demo():
+    arr = [1, 15, 7, 9, 2, 5, 10]
+    K = 3
+    print("Partition Array Max Sum:", pams.partition_array_max_sum(arr, K))
+
+
+# -----------------
+# Stringology group
+# -----------------
+@cli.group()
+def string():
+    """Stringology DP problems"""
+    pass
+
+
+@string.command()
+def wildcard_demo():
+    print("Wildcard Match:", wm.is_match("adceb", "*a*b"))
+
+
+@string.command()
+def regex_demo():
+    print("Regex Match:", rm.is_regex_match("aab", "c*a*b"))
+
+
+@string.command()
+def scs_demo():
+    print("Shortest Common Supersequence length:", scs.scs("abac", "cab"))
+
+
+@string.command()
+def distinct_demo():
+    print("Distinct subsequences count:", dsc.num_distinct("rabbbit", "rabbit"))
+
+
+@string.command()
+def minwin_demo():
+    print("Minimum Window Subsequence:", mws.min_window_subseq("abcdebdde", "bde"))
