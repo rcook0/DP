@@ -1,0 +1,16 @@
+"""
+Egg Dropping
+"""
+def egg_drop(e,f):
+    dp=[[0]*(f+1) for _ in range(e+1)]
+    for j in range(1,f+1): dp[1][j]=j
+    for i in range(2,e+1):
+        for j in range(1,f+1):
+            best=10**9
+            for x in range(1,j+1):
+                best=min(best,1+max(dp[i-1][x-1],dp[i][j-x]))
+            dp[i][j]=best
+    return dp[e][f]
+
+if __name__ == "__main__":
+    print(egg_drop(2,20))
