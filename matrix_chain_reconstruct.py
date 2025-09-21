@@ -1,13 +1,3 @@
-"""
-Matrix Chain Multiplication with optimal parenthesization reconstruction.
-
-State:
-  dp[i][j] = min cost to multiply A_i..A_j
-  split[i][j] = k that achieves the minimum
-
-Returns:
-  (cost, parenthesization_string)
-"""
 def matrix_chain_parenthesize(p):
     n = len(p) - 1
     dp = [[0]*(n+1) for _ in range(n+1)]
@@ -26,9 +16,3 @@ def matrix_chain_parenthesize(p):
         k = split[i][j]
         return f"({build(i,k)}{build(k+1,j)})"
     return dp[1][n], build(1, n)
-
-if __name__ == "__main__":
-    p=[30,35,15,5,10,20,25]
-    cost, parens = matrix_chain_parenthesize(p)
-    print(cost)
-    print(parens)
