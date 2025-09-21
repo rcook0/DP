@@ -1,39 +1,22 @@
 import click
 
 # -----------------
-# Classics
+# Import modules
 # -----------------
 from dp_compendium import (
-    coin_change_min_coins,
-    coin_change_num_ways,
-    knapsack_01,
-    knapsack_unbounded,
-    subset_sum,
-    partition_equal_subset,
-    lis,
-    lcs_traceback,
-    edit_distance,
-    rod_cutting,
-    house_robber,
-    longest_palindromic_subsequence,
-    palindrome_partitioning_min_cuts,
-    floyd_warshall_paths,
-    tsp_bitmask_path,
-    matrix_chain_reconstruct,
-    optimal_bst,
-    polygon_triangulation,
-    tree_max_independent_set,
-    egg_dropping,
-    painters_partition,
-    digit_dp_no_consecutive_equal,
-    sequence_alignment_traceback,
-    dtw,
-)
+    # Classics
+    coin_change_min_coins, coin_change_num_ways,
+    knapsack_01, knapsack_unbounded,
+    subset_sum, partition_equal_subset,
+    lis, lcs_traceback, edit_distance,
+    rod_cutting, house_robber,
+    longest_palindromic_subsequence, palindrome_partitioning_min_cuts,
+    floyd_warshall_paths, tsp_bitmask_path,
+    matrix_chain_reconstruct, optimal_bst, polygon_triangulation,
+    tree_max_independent_set, egg_dropping, painters_partition,
+    digit_dp_no_consecutive_equal, sequence_alignment_traceback, dtw,
 
-# -----------------
-# Exotics
-# -----------------
-from dp_compendium import (
+    # Exotics
     steiner_tree_bitmask as steiner,
     hamiltonian_count as hc,
     min_path_cover_dag as mpc,
@@ -41,207 +24,105 @@ from dp_compendium import (
     grundy_subtraction as gs,
     probability_dp as pd,
     mdp_value_iteration as mdp,
-)
 
-# -----------------
-# Sequence / Array
-# -----------------
-from dp_compendium import (
+    # Sequence / Array
     max_sum_incr_subseq as msis,
     longest_bitonic_subseq as lbs,
     max_submatrix_sum as mss,
     partition_array_max_sum as pams,
-)
 
-# -----------------
-# Stringology
-# -----------------
-from dp_compendium import (
+    # Stringology
     wildcard_match as wm,
     regex_match as rm,
     shortest_common_superseq as scs,
     distinct_subseq_count as dsc,
     min_window_subseq as mws,
-)
 
+    # New Digit DP / Combinatorics / Optimizations / NLP/Bio
+    digit_dp_sum_mod_k, digit_dp_no_adjacent_zeros, digit_dp_prime_sum,
+    partition_numbers as pn,
+    polygon_triangulation_area_constraint as tri_area,
+    dp_optimizations as dpo,
+    aliens_trick_partition as atp,
+    viterbi_hmm as vit,
+    cyk_parsing as cyk,
+    damerau_levenshtein as dl,
+    affine_gap_alignment as aga,
+)
 
 @click.group()
 def cli():
     """Dynamic Programming Compendium CLI"""
     pass
 
-
-# -----------------
-# Classics group
-# -----------------
+# Example groups kept short — add your demos here
 @cli.group()
-def classics():
-    """Classic DP problems"""
+def digitdp():
+    """Digit DP problems"""
     pass
 
+@digitdp.command()
+def sum_mod_k():
+    print("Count:", digit_dp_sum_mod_k.count_sum_divisible_by_k(1000, 3))
 
-@classics.command()
-def coin_demo():
-    print("Coin Change (min coins):", coin_change_min_coins.min_coins([1, 2, 5], 11))
+@digitdp.command()
+def no_adj_zeros():
+    print("Count:", digit_dp_no_adjacent_zeros.count_no_adjacent_zeros(1000))
 
+@digitdp.command()
+def prime_sum():
+    print("Count:", digit_dp_prime_sum.count_prime_digit_sum(1000))
 
-@classics.command()
-def knapsack_demo():
-    print("Knapsack 0/1:", knapsack_01.knapsack([1, 2, 3], [6, 10, 12], 5))
-
-
-@classics.command()
-def lis_demo():
-    print("LIS length:", lis.lis([10, 22, 9, 33, 21, 50, 41, 60]))
-
-
-@classics.command()
-def lcs_demo():
-    print("LCS:", lcs_traceback.lcs("ABCBDAB", "BDCAB"))
-
-
-@classics.command()
-def edit_demo():
-    print("Edit Distance:", edit_distance.edit_distance("kitten", "sitting"))
-
-
-@classics.command()
-def matrix_demo():
-    arr = [40, 20, 30, 10, 30]
-    print("Matrix Chain Multiplication:", matrix_chain_reconstruct.matrix_chain_order(arr))
-
-
-# -----------------
-# Exotics group
-# -----------------
 @cli.group()
-def exotics():
-    """Exotic / advanced DP problems"""
+def combinatorics():
+    """Combinatorial DP"""
     pass
 
+@combinatorics.command()
+def partitions():
+    print("Stirling(5,2) =", pn.stirling2(5,2))
+    print("Bell(5) =", pn.bell(5))
 
-@exotics.command()
-def steiner_demo():
-    n = 4
-    edges = [(0, 1, 1), (1, 2, 1), (2, 3, 1), (3, 0, 1), (0, 2, 2), (1, 3, 2)]
-    print("Steiner cost:", steiner.steiner_tree_cost(n, edges, [0, 2]))
-
-
-@exotics.command()
-def hamiltonian_demo():
-    adj = [[0, 1, 1], [1, 0, 1], [1, 1, 0]]
-    print("Hamiltonian cycles:", hc.count_hamiltonian_cycles(adj))
-
-
-@exotics.command()
-def pathcover_demo():
-    n = 4
-    edges = [(0, 1), (1, 2), (2, 3)]
-    print("Min path cover:", mpc.min_path_cover_by_matching(n, edges))
-
-
-@exotics.command()
-def game_demo():
-    arr = [1, 5, 233, 7]
-    print("Optimal first-player score:", gpe.optimal_first_player_score(arr))
-
-
-@exotics.command()
-def grundy_demo():
-    moves = [1, 3, 4]
-    heaps = [5, 7]
-    print("Position winning?", gs.winning_position(heaps, moves))
-
-
-@exotics.command()
-def prob_demo():
-    print("P(H=3 before T=3):", pd.prob_heads_before_tails(3, 3))
-    print("Ways (2 dice->7):", pd.dice_ways(2, 7))
-
-
-@exotics.command()
-def mdp_demo():
-    S = ["A", "B", "C"]
-    A = {"A": ["stay", "go"], "B": ["stay", "go"], "C": ["stay"]}
-
-    def P(s, a):
-        if s == "A" and a == "go":
-            return [(0.7, "B"), (0.3, "C")]
-        if s == "B" and a == "go":
-            return [(0.6, "C"), (0.4, "A")]
-        return [(1.0, s)]
-
-    def R(s, a, sp):
-        return 1.0 if sp == "C" else 0.0
-
-    V, pi = mdp.value_iteration(S, A, P, R, 0.9)
-    print("Values:", V)
-    print("Policy:", pi)
-
-
-# -----------------
-# Sequence / Array group
-# -----------------
 @cli.group()
-def sequence():
-    """Sequence / Array DP problems"""
+def geometry():
+    """Geometry / optimization DPs"""
     pass
 
+@geometry.command()
+def triang_area():
+    poly=[(0,0),(2,0),(3,1),(2,2),(0,2)]
+    print("Min perimeter:", tri_area.min_triangulation_perimeter_with_min_area(poly))
 
-@sequence.command()
-def msis_demo():
-    arr = [1, 101, 2, 3, 100, 4, 5]
-    print("MSIS:", msis.max_sum_incr_subseq(arr))
+@geometry.command()
+def optimizations():
+    print("Knuth slimes:", dpo.knuth_opt_slimes([3,2,4,1]))
 
+@geometry.command()
+def aliens():
+    print("Alien’s trick:", atp.minimize_largest_sum([7,2,5,10,8], 2))
 
-@sequence.command()
-def bitonic_demo():
-    arr = [1, 11, 2, 10, 4, 5, 2, 1]
-    print("Longest Bitonic Subsequence:", lbs.longest_bitonic_subseq(arr))
-
-
-@sequence.command()
-def submatrix_demo():
-    mat = [[1, -2, -1, 4], [-8, 3, 4, 2], [3, 8, 10, -8], [-4, -1, 1, 7]]
-    print("Max Submatrix Sum:", mss.max_submatrix_sum(mat))
-
-
-@sequence.command()
-def partition_demo():
-    arr = [1, 15, 7, 9, 2, 5, 10]
-    K = 3
-    print("Partition Array Max Sum:", pams.partition_array_max_sum(arr, K))
-
-
-# -----------------
-# Stringology group
-# -----------------
 @cli.group()
-def string():
-    """Stringology DP problems"""
+def nlp_bio():
+    """NLP / Bioinformatics DP"""
     pass
 
+@nlp_bio.command()
+def viterbi_demo():
+    states=['H','C']
+    start={'H':0.6,'C':0.4}
+    trans={'H':{'H':0.7,'C':0.3},'C':{'H':0.4,'C':0.6}}
+    emit={'H':{'A':0.2,'B':0.8},'C':{'A':0.5,'B':0.5}}
+    print("Path:", vit.viterbi(states,start,trans,emit,['A','B','A','B']))
 
-@string.command()
-def wildcard_demo():
-    print("Wildcard Match:", wm.is_match("adceb", "*a*b"))
+@nlp_bio.command()
+def cyk_demo():
+    prods={'S':[('S','S'),'A'], 'A':['a']}
+    print("CYK parse:", cyk.cyk_parse({'a'}, prods, 'S', 'aa'))
 
+@nlp_bio.command()
+def damerau_demo():
+    print("DL distance:", dl.damerau_levenshtein("CA","AC"))
 
-@string.command()
-def regex_demo():
-    print("Regex Match:", rm.is_regex_match("aab", "c*a*b"))
-
-
-@string.command()
-def scs_demo():
-    print("Shortest Common Supersequence length:", scs.scs("abac", "cab"))
-
-
-@string.command()
-def distinct_demo():
-    print("Distinct subsequences count:", dsc.num_distinct("rabbbit", "rabbit"))
-
-
-@string.command()
-def minwin_demo():
-    print("Minimum Window Subsequence:", mws.min_window_subseq("abcdebdde", "bde"))
+@nlp_bio.command()
+def affine_demo():
+    print("Affine gap alignment score:", aga.needleman_wunsch_affine("GATTACA","GCATGCU"))
