@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dp-compendium"
+version = "0.1.0"
+description = "Dynamic Programming Compendium: classic + exotic DP problems with CLI and notebooks"
+authors = [{ name = "Your Name" }]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "rich>=13.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/dp-compendium"
+Issues = "https://github.com/yourusername/dp-compendium/issues"
+
+[project.scripts]
+dp-cli = "dp_compendium.cli:main"
